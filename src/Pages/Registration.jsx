@@ -7,18 +7,22 @@ import { AuthContext } from "../Provider/AuthProvider"
 
 const Registration = () => {
   const navigate = useNavigate()
-  const { signInWithGoogle, createUser } = useContext(AuthContext)
+  const { signInWithGoogle, createUser, updateUserProfile, user, setUser } = useContext(AuthContext)
 
   // email and password register
   const handleRegister = async e => {
     e.preventDefault()
     const form = e.target;
+    const name = form.name.value
+    const photo = form.photo.value
     const email = form.email.value
     const password = form.password.value
 
     try {
       const result = await createUser(email, password)
       console.log(result);
+      await updateUserProfile(name, photo)
+      setUser({...user, photoURL: photo, displayName: name})
       toast.success('Successfully registered ')
       navigate('/')
     }
