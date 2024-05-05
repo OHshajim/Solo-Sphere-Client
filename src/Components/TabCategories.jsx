@@ -1,7 +1,24 @@
 
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
+import JobCard from './JobCard';
+// import { useLoaderData } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+
 const TabCategories = () => {
+    // const jobs = useLoaderData()
+
+    const [jobs, setJobs] = useState([])
+    
+    useEffect(() => {
+        const getData = async () => {
+            const { data } = await axios(`${import.meta.env.VITE_SERVER_URL}/jobs`)
+            setJobs(data)
+        }
+        getData()
+    }, [])
+    console.log(jobs);
     return (
         <Tabs>
             <div className='container py-10 px-6 mx-auto'>
@@ -15,18 +32,30 @@ const TabCategories = () => {
                     <TabList>
                         <Tab>Web Development</Tab>
                         <Tab>Graphics Design</Tab>
-                        <Tab>Digital Marketing </Tab>
+                        <Tab>Digital Marketing</Tab>
                     </TabList>
                 </div>
 
                 <TabPanel>
-                    <h2>Any content 1</h2>
+                    <div className='grid grid-cols-1 gap-8 mt-8 xl:mt-16 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+                        {
+                            jobs.filter(job => job.Category === "Web Development").map(job => <JobCard key={job._id} job={job} />)
+                        }
+                    </div>
                 </TabPanel>
                 <TabPanel>
-                    <h2>Any content 2</h2>
+                    <div className='grid grid-cols-1 gap-8 mt-8 xl:mt-16 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+                        {
+                            jobs.filter(job => job.Category === "Graphics Design").map(job => <JobCard key={job._id} job={job} />)
+                        }
+                    </div>
                 </TabPanel>
                 <TabPanel>
-                    <h2>Any content 2</h2>
+                    <div className='grid grid-cols-1 gap-8 mt-8 xl:mt-16 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+                        {
+                            jobs.filter(job => job.Category === "Digital Marketing").map(job => <JobCard key={job._id} job={job} />)
+                        }
+                    </div>
                 </TabPanel>
             </div>
         </Tabs>

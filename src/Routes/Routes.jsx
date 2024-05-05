@@ -14,6 +14,7 @@ const Routes = createBrowserRouter([
             {
                 path: "/",
                 element: <Home />,
+                // loader:()=>fetch(`${import.meta.env.VITE_SERVER_URL}/jobs`)
             },
             {
                 path: "/login",
