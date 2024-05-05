@@ -5,21 +5,30 @@ import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
+import toast from "react-hot-toast";
+
 const JobDetails = () => {
   const job = useLoaderData()
-  const [startDate, setStartDate] = useState(new Date());
   const { user } = useContext(AuthContext)
-  const { _id, Email, JobTitle, Deadline, Description, Category, MinimumPrice, MaximumPrice } = job;
+  const [startDate, setStartDate] = useState(new Date());
+  const { _id, JobTitle, Deadline, Description, Category, MinimumPrice, MaximumPrice, buyer } = job;
+
+
   const handleSubmission = async (e) => {
+
     e.preventDefault();
     const form = e.target;
     const email = form.email.value;
     const price = parseFloat(form.price.value);
     const comment = form.comment.value;
     const deadline = startDate;
-    const buyer_email = Email;
+    const buyer_email = `${buyer.Email}`;
     const status = "Pending";
     const jobId = _id
+
+    if (user?.email === buyer_email) return toast.error("Action are not permitted");
+    if (price < parseFloat(MinimumPrice)) return toast.error("price will be equal or more then minimum price");
+
     const biding = {
       jobId, price, email, comment, buyer_email, status, JobTitle, deadline
     }
@@ -27,6 +36,7 @@ const JobDetails = () => {
     try {
       const { data } = await axios.post(`${import.meta.env.VITE_SERVER_URL}/bids`, biding)
       console.log(data);
+      toast.success("successfully bided ")
     }
     catch (err) {
       console.log(err);
@@ -58,13 +68,13 @@ const JobDetails = () => {
           </p>
           <div className='flex items-center gap-5'>
             <div>
-              <p className='mt-2 text-sm  text-gray-600 '>Name: Jhankar Vai.</p>
+              <p className='mt-2 text-sm  text-gray-600 '>Name: {buyer.name}</p>
               <p className='mt-2 text-sm  text-gray-600 '>
-                Email: {Email}
+                Email:  {buyer.Email}
               </p>
             </div>
             <div className='rounded-full object-cover overflow-hidden w-14 h-14'>
-              <img src='' alt='' />
+              <img src={buyer.photo} alt='' />
             </div>
           </div>
           <p className='mt-6 text-lg font-bold text-gray-600 '>
