@@ -21,13 +21,14 @@ const JobDetails = () => {
     const email = form.email.value;
     const price = parseFloat(form.price.value);
     const comment = form.comment.value;
-    const deadline = startDate;
+    const deadline = `${new Date(startDate).toLocaleDateString()}`;
     const buyer_email = `${buyer.Email}`;
     const status = "Pending";
     const jobId = _id
 
     if (user?.email === buyer_email) return toast.error("Action are not permitted");
     if (price < parseFloat(MinimumPrice)) return toast.error("price will be equal or more then minimum price");
+    if (Deadline < deadline) return toast.error("Date not Supported");
 
     const biding = {
       jobId, price, email, comment, buyer_email, status, JobTitle, deadline

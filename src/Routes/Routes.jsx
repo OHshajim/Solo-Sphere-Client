@@ -39,6 +39,7 @@ const Routes = createBrowserRouter([
             {
                 path: "/myPostedJobs",
                 element: <MyPostedJobs />,
+                
             },
             {
                 path: "/myBids",
@@ -49,13 +50,14 @@ const Routes = createBrowserRouter([
                 element: <AddJob />,
             },
             {
-                path: "/updateJob",
+                path: "/updateJob/:id",
                 element: <UpdateJob />,
+                loader: ({ params }) => fetch(`${import.meta.env.VITE_SERVER_URL}/job/${params.id}`)
             },
             {
                 path: "/jobDetails/:id",
                 element: <JobDetails />,
-                loader: ({ params }) => fetch(`${import.meta.env.VITE_SERVER_URL}/jobs/${params.id}`)
+                loader: ({ params }) => fetch(`${import.meta.env.VITE_SERVER_URL}/job/${params.id}`)
             },
         ]
     },

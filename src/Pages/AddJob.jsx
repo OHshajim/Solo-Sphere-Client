@@ -14,7 +14,7 @@ const AddJob = () => {
     const Email = form.email.value;
     const Description = form.description.value;
     const Category = form.category.value;
-    const Deadline = startDate;
+    const Deadline = `${new Date(startDate).toLocaleDateString()}`;
     const MinimumPrice = form.min_price.value;
     const MaximumPrice = form.max_price.value;
     const JobTitle = form.job_title.value;

@@ -1,13 +1,41 @@
+import { useContext, useEffect, useState } from "react"
 import MyPostedJobsRows from "../Components/MyPostedJobsRows"
+import axios from "axios"
+import { AuthContext } from "../Provider/AuthProvider"
+import toast from "react-hot-toast"
 
 const MyPostedJobs = () => {
+  const { user } = useContext(AuthContext)
+  const [jobs, setJobs] = useState([])
+
+  const getData = async () => {
+    const { data } = await axios(`${import.meta.env.VITE_SERVER_URL}/myJobs/${user?.email}`)
+    setJobs(data)
+  }
+
+  useEffect(() => {
+    getData()
+  }, [user])
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`${import.meta.env.VITE_SERVER_URL}/myJobs/${id}`)
+      toast.success('Successfully deleted ')
+      getData()
+    }
+    catch (err) {
+      console.log(err.message);
+      toast.error(err?.message)
+    }
+  }
+  
   return (
-    <section className='container px-4 mx-auto pt-12'>
+    <section className='container px-4 mx-auto pt-12 my-12'>
       <div className='flex items-center gap-x-3'>
-        <h2 className='text-lg font-medium text-gray-800 '>My Posted Jobs</h2>
+        <h2 className='text-lg font-medium  '>My Posted Jobs</h2>
 
         <span className='px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full '>
-          05 Jobs
+          {((jobs.length) >= 9) ? jobs.length : '0' + (jobs.length)} {(jobs.length > 1) ? "Jobs" : 'Job'}
         </span>
       </div>
 
@@ -62,7 +90,7 @@ const MyPostedJobs = () => {
                   </tr>
                 </thead>
                 <tbody className='bg-white divide-y divide-gray-200 '>
-                  <MyPostedJobsRows />
+                  {jobs.map(job => <MyPostedJobsRows key={job._id} job={job} handleDelete={handleDelete} />)}
                 </tbody>
               </table>
             </div>
